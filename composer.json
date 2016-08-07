@@ -1,0 +1,11 @@
+{
+    "name": "sassnowski/csv-schema",
+    "autoload": {
+        "psr-4": {
+            "Sassnowski\\CsvSchema\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0"
+    }
+}
