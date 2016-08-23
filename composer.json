@@ -7,5 +7,9 @@
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0"
+    },
+    "require": {
+        "tightenco/collect": "^5.2",
+        "league/csv": "^8.0"
     }
 }

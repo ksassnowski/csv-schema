@@ -1,4 +1,4 @@
 suites:
   library_suite:
-    namespace: Sassnowski\CsvSchema\Tests
-    psr4_prefix: Sassnowski\CsvSchema\Tests
+    namespace: Sassnowski\CsvSchema
+    psr4_prefix: Sassnowski\CsvSchema
