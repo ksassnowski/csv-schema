@@ -1,5 +1,8 @@
 # CSV Schema Parser
 
+[![Build Status](https://travis-ci.org/ksassnowski/csv-schema.svg?branch=master)](https://travis-ci.org/ksassnowski/csv-schema)
+[![Code Climate](https://codeclimate.com/github/ksassnowski/csv-schema/badges/gpa.svg)](https://codeclimate.com/github/ksassnowski/csv-schema)
+
 Have you ever wanted to have something like an ORM but for CSV files? No? Well now you can!
 
 Introducing **CSV Schema Parser**. The number one way to turn your boring old CSV files into kick-ass PHP objects.
