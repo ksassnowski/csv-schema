@@ -5,6 +5,11 @@ namespace Sassnowski\CsvSchema;
 use League\Csv\Reader;
 use Sassnowski\CsvSchema\Exceptions\UnsupportedTypeException;
 
+/**
+ * CSV Parser class. This is where the magic happens.
+ *
+ * @author K.Sassnowski <ksassnowski@gmail.com>
+ */
 class Parser
 {
     /**
