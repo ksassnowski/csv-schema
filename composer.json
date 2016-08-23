@@ -1,5 +1,8 @@
 {
     "name": "sassnowski/csv-schema",
+    "author": "Kai Sassnowski <ksassnowski@gmail.com>",
+    "description": "Turn your CSV files into objects. It's like an ORM for CSV!",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Sassnowski\\CsvSchema\\": "src/"
