@@ -130,33 +130,17 @@ class Parser
     /**
      * @param string $type
      *
-     * @return string|null
+     * @return array
      */
-    protected function getArguments($type)
+    protected function parseType($type)
     {
-        if ($this->isArrayType($type)) {
-            return explode(':', $type)[1];
+        $parameters = [];
+
+        if (strpos($type, ':') !== false) {
+            list($type, $parameters) = explode(':', $type, 2);
         }
-    }
 
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function isArrayType($type)
-    {
-        return substr($type, 0, 5) === 'array';
-    }
-
-    /**
-     * @param $value
-     *
-     * @return string
-     */
-    protected function parseString($value)
-    {
-        return (string) $value;
+        return [$this->getMethodName($type), $parameters];
     }
 
     /**
@@ -170,19 +154,13 @@ class Parser
     }
 
     /**
-     * @param string $type
+     * @param $value
      *
-     * @return array
+     * @return string
      */
-    protected function parseType($type)
+    protected function parseString($value)
     {
-        $parameters = [];
-
-        if (strpos($type, ':') !== false) {
-            list($type, $parameters) = explode(':', $type, 2);
-        }
-
-        return [$this->getMethodName($type), $parameters];
+        return (string) $value;
     }
 
     /**
