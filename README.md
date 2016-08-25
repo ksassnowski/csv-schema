@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ksassnowski/csv-schema.svg?branch=master)](https://travis-ci.org/ksassnowski/csv-schema)
 [![Code Climate](https://codeclimate.com/github/ksassnowski/csv-schema/badges/gpa.svg)](https://codeclimate.com/github/ksassnowski/csv-schema)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/?branch=master)
 
 Have you ever wanted to have something like an ORM but for CSV files? No? Well now you can!
 
