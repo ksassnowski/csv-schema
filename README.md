@@ -4,6 +4,8 @@
 [![Code Climate](https://codeclimate.com/github/ksassnowski/csv-schema/badges/gpa.svg)](https://codeclimate.com/github/ksassnowski/csv-schema)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/efc81c31-f930-4d96-8c90-6104d500788a/mini.png)](https://insight.sensiolabs.com/projects/efc81c31-f930-4d96-8c90-6104d500788a)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ksassnowski/csv-schema/master/LICENSE.md)
+[![Current Release](https://img.shields.io/badge/packagist-0.2.0-blue.svg)](https://img.shields.io/badge/release-0.2.0-blue.svg)
 
 Have you ever wanted to have something like an ORM but for CSV files? No? Well now you can!
 
