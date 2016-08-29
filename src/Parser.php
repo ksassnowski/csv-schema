@@ -135,10 +135,10 @@ class Parser
      */
     protected function getValue($type, $value)
     {
-        list($method, $parameters) = $this->parseType($type);
+        list($type, $parameters) = $this->parseType($type);
 
-        if (method_exists($this, $method)) {
-            $method = [$this, $method];
+        if (method_exists($this, $this->getMethodName($type))) {
+            $method = [$this, $this->getMethodName($type)];
         } elseif ($this->hasCustomType($type)) {
             $method = static::$customTypes[$type];
         } else {
@@ -161,7 +161,7 @@ class Parser
             list($type, $parameters) = explode(':', $type, 2);
         }
 
-        return [$this->getMethodName($type), $parameters];
+        return [$type, $parameters];
     }
 
     /**

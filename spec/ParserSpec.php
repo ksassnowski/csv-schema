@@ -179,4 +179,25 @@ class ParserSpec extends ObjectBehavior
 
         $this->parseRow($input)->shouldEqual(['a' => 'testfoo', 'b' => 25]);
     }
+
+    public function it_should_accept_parameters_for_custom_types()
+    {
+        $this->beConstructedWith([
+            'schema' => [
+                'a' => 'multiply:2',
+                'b' => 'multiply:4',
+            ],
+        ]);
+
+        Parser::registerType('multiply', function ($value, $multiplier) {
+            return (int) $value * (int) $multiplier;
+        });
+
+        $input = [2, 2];
+
+        $this->parseRow($input)->shouldEqual([
+            'a' => 4,
+            'b' => 8,
+        ]);
+    }
 }
