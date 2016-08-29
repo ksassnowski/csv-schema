@@ -3,7 +3,9 @@
 namespace spec\Sassnowski\CsvSchema;
 
 use PhpSpec\ObjectBehavior;
+use Sassnowski\CsvSchema\Exceptions\CastException;
 use Sassnowski\CsvSchema\Exceptions\UnsupportedTypeException;
+use Sassnowski\CsvSchema\Parser;
 
 class ParserSpec extends ObjectBehavior
 {
@@ -132,5 +134,49 @@ class ParserSpec extends ObjectBehavior
         ]);
 
         $this->shouldThrow(UnsupportedTypeException::class)->during('parseRow', [['foo']]);
+    }
+
+    public function it_throws_an_exception_when_trying_to_parse_a_non_numeric_value_to_an_int()
+    {
+        $this->beConstructedWith([
+            'schema' => [
+                'a' => 'int',
+            ],
+        ]);
+
+        $this->shouldThrow(CastException::class)->during('parseRow', [['a']]);
+    }
+
+    public function it_throws_an_exception_when_trying_to_parse_a_non_numeric_value_to_a_float()
+    {
+        $this->beConstructedWith([
+            'schema' => [
+                'a' => 'float',
+            ],
+        ]);
+
+        $this->shouldThrow(CastException::class)->during('parseRow', [['a']]);
+    }
+
+    public function it_can_register_custom_types()
+    {
+        $this->beConstructedWith([
+            'schema' => [
+                'a' => 'foo',
+                'b' => 'square',
+            ],
+        ]);
+
+        Parser::registerType('foo', function ($value) {
+            return $value.'foo';
+        });
+
+        Parser::registerType('square', function ($value) {
+            return $value * $value;
+        });
+
+        $input = ['test', 5];
+
+        $this->parseRow($input)->shouldEqual(['a' => 'testfoo', 'b' => 25]);
     }
 }
