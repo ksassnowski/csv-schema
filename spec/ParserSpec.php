@@ -5,6 +5,7 @@ namespace spec\Sassnowski\CsvSchema;
 use PhpSpec\ObjectBehavior;
 use Sassnowski\CsvSchema\Exceptions\CastException;
 use Sassnowski\CsvSchema\Exceptions\UnsupportedTypeException;
+use Sassnowski\CsvSchema\Parser;
 
 class ParserSpec extends ObjectBehavior
 {
@@ -155,5 +156,27 @@ class ParserSpec extends ObjectBehavior
         ]);
 
         $this->shouldThrow(CastException::class)->during('parseRow', [['a']]);
+    }
+
+    public function it_can_register_custom_types()
+    {
+        $this->beConstructedWith([
+            'schema' => [
+                'a' => 'foo',
+                'b' => 'square',
+            ],
+        ]);
+
+        Parser::registerType('foo', function ($value) {
+            return $value.'foo';
+        });
+
+        Parser::registerType('square', function ($value) {
+            return $value * $value;
+        });
+
+        $input = ['test', 5];
+
+        $this->parseRow($input)->shouldEqual(['a' => 'testfoo', 'b' => 25]);
     }
 }

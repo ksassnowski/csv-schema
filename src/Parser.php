@@ -34,6 +34,11 @@ class Parser
     private $defaultEscape = '\\';
 
     /**
+     * @var array
+     */
+    private static $customTypes = [];
+
+    /**
      * Parser constructor.
      *
      * @param array $config
@@ -41,6 +46,18 @@ class Parser
     public function __construct(array $config)
     {
         $this->config = $config;
+    }
+
+    /**
+     * Register a handler for a custom type. The handler will be called with
+     * the value to parse.
+     *
+     * @param string   $type
+     * @param callable $callback
+     */
+    public static function registerType($type, callable $callback)
+    {
+        static::$customTypes[$type] = $callback;
     }
 
     /**
@@ -120,11 +137,15 @@ class Parser
     {
         list($method, $parameters) = $this->parseType($type);
 
-        if (!method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
+            $method = [$this, $method];
+        } elseif ($this->hasCustomType($type)) {
+            $method = static::$customTypes[$type];
+        } else {
             throw new UnsupportedTypeException($type);
         }
 
-        return call_user_func_array([$this, $method], [$value, $parameters]);
+        return call_user_func_array($method, [$value, $parameters]);
     }
 
     /**
@@ -213,5 +234,15 @@ class Parser
         if (!is_numeric($value)) {
             throw new CastException("Unable to cast value '$value' to type $targetType.");
         }
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    protected function hasCustomType($type)
+    {
+        return isset(static::$customTypes[$type]);
     }
 }
