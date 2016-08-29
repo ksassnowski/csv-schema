@@ -160,3 +160,83 @@ array(5) {
     string(7) "friends"
   }
 ```
+
+## Adding custom types
+
+Sometimes you might want a bit more control than the build in types give you. For instance you might want to query your database
+based on an integer in one of your columns and return a model instead. You can easily register
+arbitrarily complex types by using the static `registerType` method on the `Parser` class.
+
+```php
+<?php
+
+public static registerType(string $type, callable $callback)
+```
+
+The provided callback receives the column's value and should return its parsed representation.
+
+```php
+<?php
+
+Parser::registerType('foo', function ($value) {
+    return $value.'foo';
+});
+
+$config = [
+    'schema' => [
+        'custom' => 'foo'
+    ]
+];
+
+$parser = new \Sassnowski\CsvSchema\Parser($config);
+
+$rows = $parser->fromString("hello\nworld");
+
+var_dump($rows[0]->custom);
+// string(8) "hellofoo"
+
+var_dump($rows[1]->custom);
+// string(8) "worldfoo"
+```
+
+### Adding parameters to custom types
+
+You can add additional parameters to your types by specifying them in the following format in your schema `<type>:<parameter>`.
+In this case the callback function gets passed a second parameter containing the parameter specified in the schema. 
+This allows you to reuse your types instead of defining all sorts of variation of the same type (like querying the database, but using a different table/model).
+
+```php
+<?php
+
+Parser::registerType('model', function ($value, $table) {
+    // Pseudo code, assuming some library.
+    return DB::table($table)->findById($value);
+});
+
+$config = [
+    'schema' => [
+        'author' => 'model:authors',
+        'uploaded_by' => 'model:users',
+    ]
+];
+
+$input = "5,13";
+
+$parser = new \Sassnowski\CsvSchema\Parser($config);
+
+$rows = $parser->fromString($input);
+
+var_dump($rows[0]->author);
+// object(Author)#1 (15) {
+    ["id"]=>
+    int(5)
+    ...
+}
+
+var_dump($rows[1]->uploaded_by);
+// object(User)#1 (12) {
+    ["id"]=>
+    int(13)
+    ...
+}
+```
