@@ -129,7 +129,7 @@ class Parser
      * @param string $type
      * @param string $value
      *
-     * @return array|mixed
+     * @return mixed
      *
      * @throws UnsupportedTypeException
      */
@@ -175,7 +175,7 @@ class Parser
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
      * @return string
      */
@@ -224,8 +224,8 @@ class Parser
     }
 
     /**
-     * @param $value
-     * @param $targetType
+     * @param string $value
+     * @param string $targetType
      *
      * @throws CastException
      */
