@@ -4,6 +4,8 @@
 [![Code Climate](https://codeclimate.com/github/ksassnowski/csv-schema/badges/gpa.svg)](https://codeclimate.com/github/ksassnowski/csv-schema)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ksassnowski/csv-schema/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/efc81c31-f930-4d96-8c90-6104d500788a/mini.png)](https://insight.sensiolabs.com/projects/efc81c31-f930-4d96-8c90-6104d500788a)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ksassnowski/csv-schema/master/LICENSE.md)
+[![Current Release](https://img.shields.io/badge/packagist-0.2.0-blue.svg)](https://img.shields.io/badge/release-0.2.0-blue.svg)
 
 Have you ever wanted to have something like an ORM but for CSV files? No? Well now you can!
 
@@ -145,16 +147,96 @@ $rows = $parser->fromString($input);
 
 var_dump($rows[0])->friends);
 
-array(5) {
-    [0]=>
-    string(4) "Lots"
-    [1]=>
-    string(3) "and"
-    [2]=>
-    string(4) "lots"
-    [3]=>
-    string(2) "of"
-    [4]=>
-    string(7) "friends"
-  }
+// array(5) {
+//    [0]=>
+//    string(4) "Lots"
+//    [1]=>
+//    string(3) "and"
+//    [2]=>
+//    string(4) "lots"
+//    [3]=>
+//    string(2) "of"
+//    [4]=>
+//    string(7) "friends"
+// }
+```
+
+## Adding custom types
+
+Sometimes you might want a bit more control than the built-in types give you. For instance, you might want to query your database
+based on an integer in one of your columns and return a model instead. You can easily register
+arbitrarily complex types by using the static `registerType` method on the `Parser` class.
+
+```php
+<?php
+
+public static registerType(string $type, callable $callback)
+```
+
+The provided callback receives the column's value and should return its parsed representation.
+
+```php
+<?php
+
+Parser::registerType('foo', function ($value) {
+    return $value.'foo';
+});
+
+$config = [
+    'schema' => [
+        'custom' => 'foo'
+    ]
+];
+
+$parser = new \Sassnowski\CsvSchema\Parser($config);
+
+$rows = $parser->fromString("hello\nworld");
+
+var_dump($rows[0]->custom);
+// string(8) "hellofoo"
+
+var_dump($rows[1]->custom);
+// string(8) "worldfoo"
+```
+
+### Adding parameters to custom types
+
+You can add additional parameters to your types by specifying them in the following format in your schema `<type>:<parameter>`.
+In this case, the callback function gets passed a second parameter containing the parameter specified in the schema.
+This allows you to reuse your types instead of defining all sorts of variations of the same type (like querying the database, but using a different table/model).
+
+```php
+<?php
+
+Parser::registerType('model', function ($value, $table) {
+    // Pseudo code, assuming some library.
+    return DB::table($table)->findById($value);
+});
+
+$config = [
+    'schema' => [
+        'author' => 'model:authors',
+        'uploaded_by' => 'model:users',
+    ]
+];
+
+$input = "5,13";
+
+$parser = new \Sassnowski\CsvSchema\Parser($config);
+
+$rows = $parser->fromString($input);
+
+var_dump($rows[0]->author);
+// object(Author)#1 (15) {
+//    ["id"]=>
+//    int(5)
+//    ...
+// }
+
+var_dump($rows[1]->uploaded_by);
+// object(User)#1 (12) {
+//    ["id"]=>
+//    int(13)
+//    ...
+// }
 ```
