@@ -147,23 +147,23 @@ $rows = $parser->fromString($input);
 
 var_dump($rows[0])->friends);
 
-array(5) {
-    [0]=>
-    string(4) "Lots"
-    [1]=>
-    string(3) "and"
-    [2]=>
-    string(4) "lots"
-    [3]=>
-    string(2) "of"
-    [4]=>
-    string(7) "friends"
-  }
+// array(5) {
+//    [0]=>
+//    string(4) "Lots"
+//    [1]=>
+//    string(3) "and"
+//    [2]=>
+//    string(4) "lots"
+//    [3]=>
+//    string(2) "of"
+//    [4]=>
+//    string(7) "friends"
+// }
 ```
 
 ## Adding custom types
 
-Sometimes you might want a bit more control than the build in types give you. For instance you might want to query your database
+Sometimes you might want a bit more control than the built-in types give you. For instance, you might want to query your database
 based on an integer in one of your columns and return a model instead. You can easily register
 arbitrarily complex types by using the static `registerType` method on the `Parser` class.
 
@@ -202,8 +202,8 @@ var_dump($rows[1]->custom);
 ### Adding parameters to custom types
 
 You can add additional parameters to your types by specifying them in the following format in your schema `<type>:<parameter>`.
-In this case the callback function gets passed a second parameter containing the parameter specified in the schema. 
-This allows you to reuse your types instead of defining all sorts of variation of the same type (like querying the database, but using a different table/model).
+In this case, the callback function gets passed a second parameter containing the parameter specified in the schema.
+This allows you to reuse your types instead of defining all sorts of variations of the same type (like querying the database, but using a different table/model).
 
 ```php
 <?php
@@ -228,15 +228,15 @@ $rows = $parser->fromString($input);
 
 var_dump($rows[0]->author);
 // object(Author)#1 (15) {
-    ["id"]=>
-    int(5)
-    ...
-}
+//    ["id"]=>
+//    int(5)
+//    ...
+// }
 
 var_dump($rows[1]->uploaded_by);
 // object(User)#1 (12) {
-    ["id"]=>
-    int(13)
-    ...
-}
+//    ["id"]=>
+//    int(13)
+//    ...
+// }
 ```
