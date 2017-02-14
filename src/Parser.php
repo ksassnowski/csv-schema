@@ -34,6 +34,11 @@ class Parser
     private $defaultEscape = '\\';
 
     /**
+     * @var string
+     */
+    private $defaultEncoding = 'UTF-8';
+
+    /**
      * @var array
      */
     private static $customTypes = [];
@@ -108,6 +113,7 @@ class Parser
         $reader->setDelimiter($this->getConfigValue('delimiter', $this->defaultDelimiter));
         $reader->setEnclosure($this->getConfigValue('enclosure', $this->defaultEnclosure));
         $reader->setEscape($this->getConfigValue('escape', $this->defaultEscape));
+        $reader->setInputEncoding($this->getConfigValue('encoding', $this->defaultEncoding));
 
         return collect($reader)->map(function ($row) {
             return (object) $this->parseRow($row);
