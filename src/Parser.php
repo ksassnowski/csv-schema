@@ -3,6 +3,7 @@
 namespace Sassnowski\CsvSchema;
 
 use League\Csv\Reader;
+use Sassnowski\CsvSchema\Exceptions\CastException;
 use Sassnowski\CsvSchema\Exceptions\UnsupportedTypeException;
 
 /**
@@ -33,6 +34,16 @@ class Parser
     private $defaultEscape = '\\';
 
     /**
+     * @var string
+     */
+    private $defaultEncoding = 'UTF-8';
+
+    /**
+     * @var array
+     */
+    private static $customTypes = [];
+
+    /**
      * Parser constructor.
      *
      * @param array $config
@@ -40,6 +51,18 @@ class Parser
     public function __construct(array $config)
     {
         $this->config = $config;
+    }
+
+    /**
+     * Register a handler for a custom type. The handler will be called with
+     * the value to parse.
+     *
+     * @param string   $type
+     * @param callable $callback
+     */
+    public static function registerType($type, callable $callback)
+    {
+        static::$customTypes[$type] = $callback;
     }
 
     /**
@@ -90,6 +113,7 @@ class Parser
         $reader->setDelimiter($this->getConfigValue('delimiter', $this->defaultDelimiter));
         $reader->setEnclosure($this->getConfigValue('enclosure', $this->defaultEnclosure));
         $reader->setEscape($this->getConfigValue('escape', $this->defaultEscape));
+        $reader->setInputEncoding($this->getConfigValue('encoding', $this->defaultEncoding));
 
         return collect($reader)->map(function ($row) {
             return (object) $this->parseRow($row);
@@ -97,36 +121,53 @@ class Parser
     }
 
     /**
+     * @param string $key
+     * @param string $default
+     *
+     * @return mixed
+     */
+    protected function getConfigValue($key, $default)
+    {
+        return isset($this->config[$key]) ? $this->config[$key] : $default;
+    }
+
+    /**
      * @param string $type
      * @param string $value
      *
-     * @return array|mixed
+     * @return mixed
      *
      * @throws UnsupportedTypeException
      */
     protected function getValue($type, $value)
     {
-        $method = $this->getMethodName($type);
+        list($type, $parameters) = $this->parseType($type);
 
-        if (!method_exists($this, $method)) {
+        if (method_exists($this, $this->getMethodName($type))) {
+            $method = [$this, $this->getMethodName($type)];
+        } elseif ($this->hasCustomType($type)) {
+            $method = static::$customTypes[$type];
+        } else {
             throw new UnsupportedTypeException($type);
         }
 
-        $args = $this->getArguments($type);
-
-        return call_user_func_array([$this, $method], [$value, $args]);
+        return call_user_func_array($method, [$value, $parameters]);
     }
 
     /**
      * @param string $type
      *
-     * @return string|null
+     * @return array
      */
-    protected function getArguments($type)
+    protected function parseType($type)
     {
-        if ($this->isArrayType($type)) {
-            return explode(':', $type)[1];
+        $parameters = [];
+
+        if (strpos($type, ':') !== false) {
+            list($type, $parameters) = explode(':', $type, 2);
         }
+
+        return [$type, $parameters];
     }
 
     /**
@@ -136,25 +177,11 @@ class Parser
      */
     protected function getMethodName($type)
     {
-        if ($this->isArrayType($type)) {
-            $type = explode(':', $type)[0];
-        }
-
         return 'parse'.ucfirst($type);
     }
 
     /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function isArrayType($type)
-    {
-        return substr($type, 0, 5) === 'array';
-    }
-
-    /**
-     * @param $value
+     * @param string $value
      *
      * @return string
      */
@@ -167,9 +194,13 @@ class Parser
      * @param string $value
      *
      * @return int
+     *
+     * @throws CastException
      */
     protected function parseInt($value)
     {
+        $this->guardAgainstNonNumeric($value, 'int');
+
         return (int) $value;
     }
 
@@ -177,9 +208,13 @@ class Parser
      * @param string $value
      *
      * @return float
+     *
+     * @throws CastException
      */
-    public function parseFloat($value)
+    protected function parseFloat($value)
     {
+        $this->guardAgainstNonNumeric($value, 'float');
+
         return (float) $value;
     }
 
@@ -195,13 +230,25 @@ class Parser
     }
 
     /**
-     * @param string $key
-     * @param string $default
+     * @param string $value
+     * @param string $targetType
      *
-     * @return mixed
+     * @throws CastException
      */
-    protected function getConfigValue($key, $default)
+    protected function guardAgainstNonNumeric($value, $targetType)
     {
-        return isset($this->config[$key]) ? $this->config[$key] : $default;
+        if (!is_numeric($value)) {
+            throw new CastException("Unable to cast value '$value' to type $targetType.");
+        }
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    protected function hasCustomType($type)
+    {
+        return isset(static::$customTypes[$type]);
     }
 }
