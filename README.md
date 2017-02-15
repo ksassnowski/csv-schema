@@ -107,7 +107,7 @@ var_dump($rows[1]->coolness_factor);
 
 ## Configuration
 
-The configuration array provides a way to overwrite the default settings of the parser. You can set the `delimiter`, the `enclosure` character as well as the `escape` character.
+The configuration array provides a way to overwrite the default settings of the parser. You can set the `delimiter`, the `enclosure` character, the `escape` character and the `encoding` of the input file.
 
 ```php
 <?php
@@ -116,6 +116,7 @@ $config = [
     'delimiter' => ',',
     'enclosure' => '"',
     'escape' => '\\',
+    'encoding' => 'UTF-8',
     'schema' => [ /* Your schema */ ],
 ];
 ```
