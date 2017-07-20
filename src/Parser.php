@@ -122,7 +122,7 @@ class Parser
         $rows = collect($reader);
 
         if ($this->getConfigValue('skipTitle', $this->skipTitle)) {
-            $rows->splice(1);
+            $rows->shift();
         }
 
         return $rows->map(function ($row) {
