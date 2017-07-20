@@ -37,6 +37,10 @@ class Parser
      * @var string
      */
     private $defaultEncoding = 'UTF-8';
+    /**
+     * @var bool
+     */
+    private $skipTitle = false;
 
     /**
      * @var array
@@ -115,7 +119,13 @@ class Parser
         $reader->setEscape($this->getConfigValue('escape', $this->defaultEscape));
         $reader->setInputEncoding($this->getConfigValue('encoding', $this->defaultEncoding));
 
-        return collect($reader)->map(function ($row) {
+        $rows = collect($reader);
+
+        if ($this->getConfigValue('skipTitle', $this->skipTitle)) {
+            $rows->splice(1);
+        }
+
+        return $rows->map(function ($row) {
             return (object) $this->parseRow($row);
         })->all();
     }

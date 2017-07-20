@@ -26,6 +26,19 @@ class ParserSpec extends ObjectBehavior
         $this->fromString($input)->shouldHaveCount(2);
     }
 
+    public function it_can_skip_the_header_row()
+    {
+        $this->beConstructedWith([
+            'skipTitle' => true,
+            'schema' => [
+                'a' => 'string',
+            ],
+        ]);
+
+        $input = "title\nhello";
+        $this->fromString($input)->shouldHaveCount(1);
+    }
+
     public function it_can_parse_from_a_file()
     {
         $this->beConstructedWith([
