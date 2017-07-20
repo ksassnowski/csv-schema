@@ -116,6 +116,7 @@ $config = [
     'delimiter' => ',',
     'enclosure' => '"',
     'escape' => '\\',
+    'skipTitle' => false,
     'schema' => [ /* Your schema */ ],
 ];
 ```
