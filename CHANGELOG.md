@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.3.0] - 2017-07-20
+## [0.4.0] - 2017-07-20
+- Added option to skip header row
+
+## [0.3.0] - 2017-02-15
 ### Added
-- Added config option to skip the title row
+- Added input encoding option
 
 ## [0.2.0] - 2016-08-30
 ### Added
