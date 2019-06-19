@@ -31,7 +31,7 @@ $config = [
     'schema' => [
         'first_name' => 'string',
         'last_name' => 'string',
-        'age' => 'integer',
+        'age' => 'int',
         'coolness_factor' => 'float',
     ]
 ];
@@ -124,7 +124,7 @@ $config = [
 
 ### Available Column Types
 
-You can parse a column to `string`, `float`, `integer` and `array`.
+You can parse a column to `string`, `float`, `int` and `array`.
 
 #### Parsing arrays
 
