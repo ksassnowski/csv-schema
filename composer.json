@@ -1,9 +1,13 @@
 {
-    "name": "sassnowski/csv-schema",
+    "name": "gucarletto/csv-schema",
     "authors": [
         {
             "name": "Kai Sassnowski",
             "email": "ksassnowski@gmail.com"
+        },
+		{
+            "name": "Gustavo Carletto",
+            "email": "gucarletto@gmail.com"
         }
     ],
     "description": "Turn your CSV files into objects. It's like an ORM for CSV!",
@@ -17,7 +21,7 @@
         "phpspec/phpspec": "~2.0"
     },
     "require": {
-        "tightenco/collect": "^5.2",
+        "tightenco/collect": "5.4.33",
         "league/csv": "^8.0"
     }
 }
