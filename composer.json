@@ -18,6 +18,6 @@
     },
     "require": {
         "tightenco/collect": "^5.2",
-        "league/csv": "^8.0"
+        "league/csv": "^8.0 | ^9.0"
     }
 }
