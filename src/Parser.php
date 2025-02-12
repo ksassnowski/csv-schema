@@ -2,6 +2,7 @@
 
 namespace Sassnowski\CsvSchema;
 
+use League\Csv\CharsetConverter;
 use League\Csv\Reader;
 use Sassnowski\CsvSchema\Exceptions\CastException;
 use Sassnowski\CsvSchema\Exceptions\UnsupportedTypeException;
@@ -117,7 +118,12 @@ class Parser
         $reader->setDelimiter($this->getConfigValue('delimiter', $this->defaultDelimiter));
         $reader->setEnclosure($this->getConfigValue('enclosure', $this->defaultEnclosure));
         $reader->setEscape($this->getConfigValue('escape', $this->defaultEscape));
-        $reader->setInputEncoding($this->getConfigValue('encoding', $this->defaultEncoding));
+
+        CharsetConverter::addTo(
+            $reader, 
+            $this->getConfigValue('encoding', $this->defaultEncoding), 
+            'utf-8'
+        );
 
         $rows = collect($reader);
 
